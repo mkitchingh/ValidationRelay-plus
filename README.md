@@ -53,8 +53,18 @@ Requires an iPhone with [TrollStore](https://github.com/opa334/TrollStore).
 To build it yourself on a Mac with Xcode, install `ldid` (`brew install ldid`)
 and run `./build.sh`.
 
-## Using an existing registration
+## If you already use OpenBubblesProxy
 
-If you register through a proxy that already swaps the identity, such as
-[OpenBubblesProxy](https://github.com/ziggy416/OpenBubblesProxy), leave Mac identity off. The proxy keeps doing that job.
-To move off the proxy, register again with Mac identity on.
+[OpenBubblesProxy](https://github.com/ziggy416/OpenBubblesProxy) is another
+workaround for Apple's change. It runs on a server between OpenBubbles and the
+relay, and swaps in a Mac identity there instead of on the phone.
+
+If your OpenBubbles is set up through it:
+
+- **To keep things as they are:** install this app and leave **Mac Identity**
+  off. Your registration keeps working through the proxy. Turning it on would
+  change the identity your registration uses, and its renewals would stop
+  working.
+- **To stop using the proxy:** turn **Mac Identity** on, point OpenBubbles
+  straight at your relay, and register again. After that, you no longer need
+  the proxy.
