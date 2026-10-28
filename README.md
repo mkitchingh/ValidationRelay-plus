@@ -5,6 +5,11 @@ The app is his work. This fork adds a Mac identity, so a relay iPhone can
 register new devices again after Apple's October 2026 change, and safeguards
 so that identity doesn't get lost.
 
+It also includes the reliability fixes from
+[Xare123's pull request #17](https://github.com/JJTech0130/ValidationRelay/pull/17),
+which hasn't been merged into the original yet. His commits are included
+unchanged.
+
 ## What's different from the original
 
 - **Mac identity.** Apple now refuses activations that report an iPhone's
@@ -25,6 +30,11 @@ so that identity doesn't get lost.
   while you have a registration, and resetting the registration code all ask
   first. Resetting the code also creates a new identity, because a new
   registration needs one.
+- **Reliability fixes** (Xare123, PR #17). Validation errors and timeouts
+  are handled instead of crashing the app, reconnects are more dependable,
+  low-level memory leaks are fixed, and the registration secret is kept in
+  the Keychain and left out of the log. Custom relay addresses must start
+  with `wss://`.
 - **Automatic builds.** GitHub Actions builds `ValidationRelay.tipa` on every
   push.
 
