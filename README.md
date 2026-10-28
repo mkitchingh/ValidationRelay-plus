@@ -1,4 +1,4 @@
-# ValidationRelay
+# ValidationRelay-plus
 
 A fork of [JJTech's ValidationRelay](https://github.com/JJTech0130/ValidationRelay).
 The app is his work. This fork adds a Mac identity, so a relay iPhone can
@@ -36,7 +36,8 @@ Requires an iPhone with [TrollStore](https://github.com/opa334/TrollStore).
    download the **ValidationRelay** artifact. It's a zip containing
    `ValidationRelay.tipa`.
 2. Unzip it and install the `.tipa` with TrollStore. It installs over the
-   original app and keeps its settings and registration code.
+   original app and keeps its settings and registration code. On the home
+   screen it shows as **Relay+**.
 3. If Mac identity is on, tap **Copy Identity** and save it somewhere safe.
 
 To build it yourself on a Mac with Xcode, install `ldid` (`brew install ldid`)
