@@ -15,6 +15,12 @@ struct ContentView: View {
     @AppStorage("selectedRelay") private var selectedRelay = "Beeper"
     @AppStorage("customRelayURL") private var customRelayURL = ""
     
+    @AppStorage(MacIdentityStore.enabledKey) private var macIdentityEnabled = false
+    @State private var macIdentity: MacIdentity? = nil
+    @State private var pendingAction: PendingAction? = nil
+    @State private var showingIdentityEntry = false
+    @State private var copiedIdentity = false
+    
     @ObservedObject var relayConnectionManager: RelayConnectionManager
 
     func getCurrentRelayURL() -> URL? {
@@ -94,6 +100,50 @@ struct ContentView: View {
                 }
                 
                 Section {
+                    Toggle("Mac Identity", isOn: Binding(
+                        get: { macIdentityEnabled },
+                        set: { newValue in
+                            if hasRegistration {
+                                pendingAction = .setIdentityEnabled(newValue)
+                            } else {
+                                setIdentityEnabled(newValue)
+                            }
+                        }
+                    ))
+                    if macIdentityEnabled, let identity = macIdentity {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Serial Number")
+                            Text(identity.serialNumber)
+                                .font(.system(.body, design: .monospaced))
+                                .foregroundColor(.secondary)
+                        }
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("UUID")
+                            Text(identity.uniqueDeviceID)
+                                .font(.system(.footnote, design: .monospaced))
+                                .foregroundColor(.secondary)
+                        }
+                        Button(copiedIdentity ? "Copied" : "Copy Identity") {
+                            UIPasteboard.general.string = identity.backupText
+                            copiedIdentity = true
+                        }
+                        Button("Enter Identity...") {
+                            showingIdentityEntry = true
+                        }
+                        Button("Generate New Identity") {
+                            pendingAction = .newIdentity
+                        }
+                        .foregroundColor(.red)
+                    }
+                } header: {
+                    Text("Identity settings")
+                } footer: {
+                    Text(macIdentityEnabled
+                         ? "Reports a Mac serial number and UUID in place of this phone's. Copy them somewhere safe: if they're lost, registrations made with them stop renewing."
+                         : "Reports this phone's own serial number and UUID. New registrations need the Mac identity.")
+                }
+                
+                Section {
                     // Navigation to Log page
                     NavigationLink(destination: LogView(logItems: relayConnectionManager.logItems)) {
                         Text("Log")
@@ -107,11 +157,7 @@ struct ContentView: View {
                             UIApplication.shared.isIdleTimerDisabled = newValue
                         }
                     Button("Reset Registration Code") {
-                        relayConnectionManager.savedRegistrationURL = ""
-                        relayConnectionManager.savedRegistrationCode = ""
-                        relayConnectionManager.savedRegistrationSecret = ""
-                        relayConnectionManager.registrationCode = "None"
-                        wantRelayConnected = false
+                        pendingAction = .resetRegistration
                     }
                     .foregroundColor(.red)
                     .frame(maxWidth: .infinity)
@@ -138,9 +184,149 @@ struct ContentView: View {
                 relayConnectionManager.refreshOnForeground(url)
             }
         }
+        .onAppear {
+            refreshIdentity()
+        }
+        .alert(item: $pendingAction) { action in
+            confirmation(for: action)
+        }
+        .sheet(isPresented: $showingIdentityEntry) {
+            IdentityEntryView(current: macIdentity) { identity in
+                MacIdentityStore.save(identity)
+                relayConnectionManager.logItems.log("Mac identity entered manually")
+                refreshIdentity()
+            }
+        }
         
     }
+    
+    // MARK: - Mac identity
+    
+    enum PendingAction: Identifiable {
+        case setIdentityEnabled(Bool)
+        case newIdentity
+        case resetRegistration
+        
+        var id: String {
+            switch self {
+            case .setIdentityEnabled(let on): return "setIdentityEnabled-\(on)"
+            case .newIdentity: return "newIdentity"
+            case .resetRegistration: return "resetRegistration"
+            }
+        }
+    }
+    
+    var hasRegistration: Bool {
+        !relayConnectionManager.savedRegistrationCode.isEmpty
+    }
+    
+    func refreshIdentity() {
+        macIdentity = macIdentityEnabled ? MacIdentityStore.currentOrCreate() : MacIdentityStore.current
+        copiedIdentity = false
+    }
+    
+    func setIdentityEnabled(_ on: Bool) {
+        macIdentityEnabled = on
+        relayConnectionManager.logItems.log(on ? "Mac identity turned on" : "Mac identity turned off")
+        refreshIdentity()
+    }
+    
+    func generateNewIdentity() {
+        let identity = MacIdentity.generate()
+        MacIdentityStore.save(identity)
+        relayConnectionManager.logItems.log("Generated new Mac identity")
+        refreshIdentity()
+    }
+    
+    func resetRegistration() {
+        relayConnectionManager.savedRegistrationURL = ""
+        relayConnectionManager.savedRegistrationCode = ""
+        relayConnectionManager.savedRegistrationSecret = ""
+        relayConnectionManager.registrationCode = "None"
+        wantRelayConnected = false
+        // Apple activates each serial number once, so a new registration
+        // needs a new identity.
+        if macIdentityEnabled {
+            generateNewIdentity()
+        }
+    }
+    
+    func confirmation(for action: PendingAction) -> Alert {
+        switch action {
+        case .setIdentityEnabled(let on):
+            return Alert(
+                title: Text(on ? "Turn on Mac identity?" : "Turn off Mac identity?"),
+                message: Text("This changes the identity your current registration uses. Its renewals may stop working, and you would need to register again."),
+                primaryButton: .destructive(Text(on ? "Turn On" : "Turn Off")) { setIdentityEnabled(on) },
+                secondaryButton: .cancel()
+            )
+        case .newIdentity:
+            return Alert(
+                title: Text("Generate a new identity?"),
+                message: Text("Registrations made with the current identity will stop renewing and must register again. Copy the current identity first if you might need it."),
+                primaryButton: .destructive(Text("Generate")) { generateNewIdentity() },
+                secondaryButton: .cancel()
+            )
+        case .resetRegistration:
+            return Alert(
+                title: Text("Reset registration code?"),
+                message: Text(macIdentityEnabled
+                              ? "You will get a new code and a new Mac identity, and will need to register your other devices again."
+                              : "You will get a new code and will need to register your other devices again."),
+                primaryButton: .destructive(Text("Reset")) { resetRegistration() },
+                secondaryButton: .cancel()
+            )
+        }
+    }
 
+}
+
+/// Lets the user restore a saved identity, or enter one used elsewhere.
+struct IdentityEntryView: View {
+    let current: MacIdentity?
+    let onSave: (MacIdentity) -> Void
+    
+    @Environment(\.presentationMode) private var presentationMode
+    @State private var serial = ""
+    @State private var uuid = ""
+    @State private var error: String? = nil
+    
+    var body: some View {
+        NavigationView {
+            Form {
+                Section {
+                    TextField("Serial number (C02...)", text: $serial)
+                        .font(.system(.body, design: .monospaced))
+                        .autocorrectionDisabled()
+                        .autocapitalization(.allCharacters)
+                    TextField("UUID", text: $uuid)
+                        .font(.system(.footnote, design: .monospaced))
+                        .autocorrectionDisabled()
+                        .autocapitalization(.allCharacters)
+                } footer: {
+                    Text(error ?? "Use this to restore an identity you copied earlier. It replaces the current identity.")
+                        .foregroundColor(error == nil ? .secondary : .red)
+                }
+            }
+            .navigationBarTitle("Enter Identity", displayMode: .inline)
+            .navigationBarItems(
+                leading: Button("Cancel") { presentationMode.wrappedValue.dismiss() },
+                trailing: Button("Save") {
+                    let (identity, message) = MacIdentity.parse(serial: serial, uuid: uuid)
+                    if let identity = identity {
+                        onSave(identity)
+                        presentationMode.wrappedValue.dismiss()
+                    } else {
+                        error = message
+                    }
+                }
+            )
+            .onAppear {
+                serial = current?.serialNumber ?? ""
+                uuid = current?.uniqueDeviceID ?? ""
+            }
+        }
+    }
 }
 
 #Preview {

@@ -12,4 +12,5 @@ zip -qry ValidationRelay.tipa Payload
 popd
 cp DerivedData/ValidationRelay/Build/Products/Release-iphoneos/ValidationRelay.tipa .
 rm -rf Payload
-open -R ValidationRelay.tipa
+# Show the result in Finder, except on a build server
+if [ -z "$CI" ]; then open -R ValidationRelay.tipa; fi

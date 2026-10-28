@@ -27,23 +27,26 @@ func getIdentifiers() -> [String: String]? {
             String(cString: $0)
         }
     }
-    
-    
     guard let softwareBuildID = buildNumber(),
           let uniqueDeviceID = copyMobileGestaltString("UniqueDeviceID"),
           let serialNumber = copyMobileGestaltString("SerialNumber") else {
         return nil
     }
 
-    let identifiers = [
+    var identifiers = [
         "hardware_version": machine,
         "software_name": "iPhone OS",
         "software_version": UIDevice.current.systemVersion,
         "software_build_id": softwareBuildID,
         "unique_device_id": uniqueDeviceID,
         "serial_number": serialNumber
-        
     ]
+    // Report the Mac identity in place of the phone's own (see MacIdentity.swift)
+    if MacIdentityStore.isEnabled {
+        let identity = MacIdentityStore.currentOrCreate()
+        identifiers["serial_number"] = identity.serialNumber
+        identifiers["unique_device_id"] = identity.uniqueDeviceID
+    }
     return identifiers
 }
 

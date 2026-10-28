@@ -11,6 +11,10 @@ import SwiftUI
 struct ValidationRelayApp: App {
     @StateObject private var relayConnectionManager = RelayConnectionManager()
 
+    init() {
+        MacIdentityStore.setDefaultIfNeeded()
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView(relayConnectionManager: relayConnectionManager)
