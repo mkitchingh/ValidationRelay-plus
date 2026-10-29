@@ -1,7 +1,7 @@
 # ValidationRelay-plus
 
 A fork of [JJTech's ValidationRelay](https://github.com/JJTech0130/ValidationRelay),
-based on his v1.8 release. The app is his work. This fork adds a Mac identity, so a relay iPhone can
+based on his v1.8 release. This app is based off his work. This fork adds a Mac identity, so a relay iPhone can
 register new devices again after Apple's October 2026 change, and safeguards
 so that identity doesn't get lost.
 
