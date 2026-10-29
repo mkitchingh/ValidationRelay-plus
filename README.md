@@ -52,3 +52,27 @@ Requires an iPhone with [TrollStore](https://github.com/opa334/TrollStore).
 
 To build it yourself on a Mac with Xcode, install `ldid` (`brew install ldid`)
 and run `./build.sh`.
+
+## Mac Identity
+
+**Identity settings** has one switch, **Mac Identity**, and it's on by default.
+On a new install you don't need to touch it — the app registers as a Mac, which
+is what Apple requires. Just tap **Copy Identity** once and keep the serial and
+UUID somewhere safe.
+
+What the buttons do:
+
+- **Copy Identity** — copies the serial and UUID. Save them; this is your backup.
+- **Enter Identity** — restores a saved identity, for example after reinstalling
+  or moving to a new phone, so you don't have to register again.
+- **Generate New Identity** — makes a fresh identity. You'll need to register
+  again, because Apple activates each serial only once.
+
+The switch is on by default. The one time it starts **off** is when you install
+over a phone that already has a working registration, so the update can't change
+what that phone reports and break it. Turn it on yourself (or tap **Enter
+Identity** / **Generate New Identity**) when you're ready to register as a Mac.
+
+Leaving Mac Identity off makes the phone report its own identity. Apple refuses
+that at activation now, so it's kept only for flexibility — a normal setup
+leaves it on.
