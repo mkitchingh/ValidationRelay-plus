@@ -139,8 +139,8 @@ struct ContentView: View {
                     Text("Identity settings")
                 } footer: {
                     Text(macIdentityEnabled
-                         ? "Reports a Mac serial number and UUID in place of this phone's. Copy them somewhere safe: if they're lost, registrations made with them stop renewing."
-                         : "Reports this phone's own serial number and UUID. New registrations need the Mac identity.")
+                         ? "Recommended. Tap Copy Identity and save it somewhere safe — Enter Identity restores it later without registering again. (See README.)"
+                         : "This phone reports its own identity. Turn on to register as a Mac. (See README.)")
                 }
                 
                 Section {

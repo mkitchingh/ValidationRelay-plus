@@ -52,3 +52,34 @@ Requires an iPhone with [TrollStore](https://github.com/opa334/TrollStore).
 
 To build it yourself on a Mac with Xcode, install `ldid` (`brew install ldid`)
 and run `./build.sh`.
+
+## Mac Identity
+
+**Why this exists:** in October 2026, Apple changed how iMessage activation
+works. It now rejects any registration that identifies itself as an **iPhone**
+through software like this. A registration that looks like a **Mac** still
+works. So instead of sending your iPhone's real serial number and device ID,
+this app sends an iMac-style serial number and ID. Apple accepts that, and your
+registration goes through. That swap is what **Mac Identity** does.
+
+Because Apple requires it, **Mac Identity is on by default, and you leave it
+on.** On a new install there's nothing to figure out — the app registers as a
+Mac automatically. The only thing to do is tap **Copy Identity** once and keep
+the serial and ID somewhere safe.
+
+Buttons under **Identity settings**:
+
+- **Copy Identity** — copies the serial and ID. Save them; this is your backup.
+- **Enter Identity** — restores a saved identity, for example after reinstalling
+  or moving to a new phone, so you don't have to register again.
+- **Generate New Identity** — makes a fresh one. You'll have to register again,
+  because Apple activates each serial only once.
+
+**When would it ever be off?** Only if you install this over a phone that
+already has a working registration. Then it starts off, so the update can't
+change what that phone reports and break it. Turn it on (or tap **Enter
+Identity** / **Generate New Identity**) when you're ready to register as a Mac.
+
+Turning Mac Identity off makes the phone report its own iPhone identity, which
+Apple now rejects. It's kept as an option only in case Apple's rules change; a
+normal setup leaves it on.
