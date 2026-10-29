@@ -10,6 +10,12 @@ It also includes the reliability fixes from
 which hasn't been merged into the original yet. His commits are applied
 on top of v1.8 under his name.
 
+<p align="center">
+  <img src="docs/relay-plus-screen.png" width="300" alt="Relay+ settings screen">
+  <br>
+  <em>The app's one screen (UI mockup; the code, serial and UUID are examples).</em>
+</p>
+
 ## What's different from the original
 
 - **Mac identity.** Apple now refuses activations that report an iPhone's
