@@ -48,13 +48,15 @@ on top of v1.8 under his name.
 
 Requires an iPhone with [TrollStore](https://github.com/opa334/TrollStore).
 
-1. Open the latest successful run under this repo's **Actions** tab and
-   download the **ValidationRelay** artifact. It's a zip containing
-   `ValidationRelay.tipa`.
-2. Unzip it and install the `.tipa` with TrollStore. It installs over the
+1. Download **[ValidationRelay.tipa](https://github.com/mkitchingh/ValidationRelay-plus/releases/latest/download/ValidationRelay.tipa)**
+   (always the latest release). Do this on the iPhone, or AirDrop the file to it.
+2. Open the `.tipa` with TrollStore and tap **Install**. It installs over the
    original app and keeps its settings and registration code. On the home
    screen it shows as **Relay+**.
-3. If Mac identity is on, tap **Copy Identity** and save it somewhere safe.
+3. If Mac Identity is on, open the app, tap **Copy Identity** and save it
+   somewhere safe.
+
+All releases are on the [Releases page](https://github.com/mkitchingh/ValidationRelay-plus/releases).
 
 To build it yourself on a Mac with Xcode, install `ldid` (`brew install ldid`)
 and run `./build.sh`.
