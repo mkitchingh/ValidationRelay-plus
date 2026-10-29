@@ -2,8 +2,16 @@ name: Build
 
 on:
   push:
+    paths-ignore: ['**.md']
   pull_request:
+    paths-ignore: ['**.md']
   workflow_dispatch:
+
+# A newer push cancels an older run still building on the same branch, so
+# queued macOS jobs don't pile up.
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
