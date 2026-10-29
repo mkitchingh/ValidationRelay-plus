@@ -55,24 +55,31 @@ and run `./build.sh`.
 
 ## Mac Identity
 
-**Identity settings** has one switch, **Mac Identity**, and it's on by default.
-On a new install you don't need to touch it — the app registers as a Mac, which
-is what Apple requires. Just tap **Copy Identity** once and keep the serial and
-UUID somewhere safe.
+**Why this exists:** in October 2026, Apple changed how iMessage activation
+works. It now rejects any registration that identifies itself as an **iPhone**
+through software like this. A registration that looks like a **Mac** still
+works. So instead of sending your iPhone's real serial number and device ID,
+this app sends an iMac-style serial number and ID. Apple accepts that, and your
+registration goes through. That swap is what **Mac Identity** does.
 
-What the buttons do:
+Because Apple requires it, **Mac Identity is on by default, and you leave it
+on.** On a new install there's nothing to figure out — the app registers as a
+Mac automatically. The only thing to do is tap **Copy Identity** once and keep
+the serial and ID somewhere safe.
 
-- **Copy Identity** — copies the serial and UUID. Save them; this is your backup.
+Buttons under **Identity settings**:
+
+- **Copy Identity** — copies the serial and ID. Save them; this is your backup.
 - **Enter Identity** — restores a saved identity, for example after reinstalling
   or moving to a new phone, so you don't have to register again.
-- **Generate New Identity** — makes a fresh identity. You'll need to register
-  again, because Apple activates each serial only once.
+- **Generate New Identity** — makes a fresh one. You'll have to register again,
+  because Apple activates each serial only once.
 
-The switch is on by default. The one time it starts **off** is when you install
-over a phone that already has a working registration, so the update can't change
-what that phone reports and break it. Turn it on yourself (or tap **Enter
+**When would it ever be off?** Only if you install this over a phone that
+already has a working registration. Then it starts off, so the update can't
+change what that phone reports and break it. Turn it on (or tap **Enter
 Identity** / **Generate New Identity**) when you're ready to register as a Mac.
 
-Leaving Mac Identity off makes the phone report its own identity. Apple refuses
-that at activation now, so it's kept only for flexibility — a normal setup
-leaves it on.
+Turning Mac Identity off makes the phone report its own iPhone identity, which
+Apple now rejects. It's kept as an option only in case Apple's rules change; a
+normal setup leaves it on.
