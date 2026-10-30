@@ -91,3 +91,7 @@ Identity** / **Generate New Identity**) when you're ready to register as a Mac.
 Turning Mac Identity off makes the phone report its own iPhone identity, which
 Apple now rejects. It's kept as an option only in case Apple's rules change; a
 normal setup leaves it on.
+
+## Related
+
+[registration-relay-selfhost](https://github.com/mkitchingh/registration-relay-selfhost) — a self-hosted, drop-in replacement for Beeper's registration relay. Run your own instead of depending on Beeper's.
