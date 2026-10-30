@@ -110,7 +110,16 @@ struct ContentView: View {
                             }
                         }
                     ))
-                    if macIdentityEnabled, let identity = macIdentity {
+                } header: {
+                    Text("Identity settings")
+                } footer: {
+                    Text(macIdentityEnabled
+                         ? "On: this phone registers as a Mac — recommended, and what Apple requires. Below are the serial and UUID it reports. See the README for what this is and when to change it."
+                         : "Off: this phone reports its own identity, which Apple no longer accepts at activation. Turn on to register as a Mac. See the README for details.")
+                }
+
+                if macIdentityEnabled, let identity = macIdentity {
+                    Section {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Serial Number")
                             Text(identity.serialNumber)
@@ -134,13 +143,9 @@ struct ContentView: View {
                             pendingAction = .newIdentity
                         }
                         .foregroundColor(.red)
+                    } footer: {
+                        Text("Tap Copy Identity and save it somewhere safe. Enter Identity restores a saved one later — on a new phone or after reinstalling — without registering again.")
                     }
-                } header: {
-                    Text("Identity settings")
-                } footer: {
-                    Text(macIdentityEnabled
-                         ? "Recommended. Tap Copy Identity and save it somewhere safe — Enter Identity restores it later without registering again. (See README.)"
-                         : "This phone reports its own identity. Turn on to register as a Mac. (See README.)")
                 }
                 
                 Section {
@@ -303,8 +308,11 @@ struct IdentityEntryView: View {
                         .font(.system(.footnote, design: .monospaced))
                         .autocorrectionDisabled()
                         .autocapitalization(.allCharacters)
+                } header: {
+                    Text("These fields start filled with your current identity — not your clipboard. Edit them, or paste in an identity you saved earlier, then tap Save to replace the current one.")
+                        .textCase(nil)
                 } footer: {
-                    Text(error ?? "Use this to restore an identity you copied earlier. It replaces the current identity.")
+                    Text(error ?? "Used to restore an identity you backed up with Copy Identity — for example on a new phone or after reinstalling.")
                         .foregroundColor(error == nil ? .secondary : .red)
                 }
             }
