@@ -169,6 +169,14 @@ struct ContentView: View {
                 } footer: {
                     Text("You will need to re-enter the code on your other devices. Keep ValidationRelay open in the foreground and keep this iPhone awake.")
                 }
+
+                Section {
+                    Text("Relay+ v\(appVersion)")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .listRowBackground(Color.clear)
+                }
             }
             .listStyle(.grouped)
             .navigationBarHidden(true)
@@ -223,6 +231,11 @@ struct ContentView: View {
     
     var hasRegistration: Bool {
         !relayConnectionManager.savedRegistrationCode.isEmpty
+    }
+
+    /// Marketing version from the app bundle (e.g. "1.0.2"), shown at the bottom of the screen.
+    var appVersion: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
     }
     
     func refreshIdentity() {
