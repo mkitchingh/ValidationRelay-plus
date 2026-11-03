@@ -1,11 +1,10 @@
 # ValidationRelay-plus
 
 A fork of [JJTech's ValidationRelay](https://github.com/JJTech0130/ValidationRelay),
-based on his v1.8 release. This app is based off his work. This fork implements
-the `activate` and `sign-data` bridge commands the current OpenBubbles release
-needs, and generates the iMac identity `activate` requires, so a relay iPhone
-keeps registering after Apple's October 2026 change — with safeguards so that
-identity doesn't get lost.
+based on his v1.8 release. This app is based off his work. This fork keeps a
+relay iPhone registering after Apple's October 2026 change and stays compatible
+with the current OpenBubbles release, with safeguards so the identity it uses
+doesn't get lost.
 
 It also includes the reliability fixes from
 [Xare123's pull request #17](https://github.com/JJTech0130/ValidationRelay/pull/17),
@@ -20,15 +19,11 @@ on top of v1.8 under his name.
 
 ## What's different from the original
 
-- **Activate & sign-data.** The 11/1/2026 OpenBubbles release sends two new
-  bridge commands, `activate` and `sign-data`. This fork answers them:
-  `activate` returns a generated iMac-format serial (an `iMac13,1` identity),
-  and `sign-data` returns an empty response. `get-version-info` and the
-  validation data report the phone's **real** serial and a persistent UUID —
-  with `activate` implemented, Apple accepts the real serial again.
+- **Current OpenBubbles compatibility.** Updated for the 11/1/2026 OpenBubbles
+  release.
 - **Updating re-registers.** This version reports a different identity than
-  earlier Mac-identity builds, so after updating, reset the registration code
-  and register your devices once more.
+  earlier builds, so after updating, reset the registration code and register
+  your devices once more.
 - **The identity stays the same.** It's created once and kept. Apple
   activates each serial number only once, so if the identity is lost or
   changed, registrations made with it stop renewing and must be done again.
@@ -65,18 +60,11 @@ and run `./build.sh`.
 
 ## Mac Identity
 
-**Why this exists:** in October 2026, Apple changed how iMessage activation
-works, and the current OpenBubbles release (11/1/2026) added an `activate`
-bridge command to match. When OpenBubbles sends `activate`, this app answers
-with a generated **iMac-format serial** (an `iMac13,1` identity). `get-version-info`
-and the validation data keep reporting the phone's **real** serial and a
-persistent UUID — with `activate` supplying the Mac serial, Apple accepts the
-real identity again.
-
-There's no on/off switch and nothing to configure: the iMac serial is generated
-automatically the first time it's needed. The only thing to do is tap **Copy
-Identity** once and keep the serial and UUID somewhere safe, because Apple
-activates each serial only once.
+Apple's October 2026 change means a relay has to present a **Mac** serial to
+register. This app generates and stores one iMac-format serial for that — there's
+no switch and nothing to configure. The one thing to do is tap **Copy Identity**
+once and keep the serial and UUID somewhere safe, because Apple activates each
+serial only once.
 
 Buttons under **Identity settings**:
 
@@ -86,10 +74,8 @@ Buttons under **Identity settings**:
 - **Generate New Identity** — makes a fresh one. You'll have to register again,
   because Apple activates each serial only once.
 
-**Updating from an earlier build:** older versions of this app swapped the Mac
-serial into `get-version-info` instead of using `activate`. This version reports
-a different identity, so after updating, tap **Reset Registration Code** and
-register your devices once more.
+**Updating from an earlier build** reports a different identity, so tap **Reset
+Registration Code** and register your devices once more.
 
 ## Related
 
