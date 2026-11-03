@@ -15,7 +15,6 @@ struct ContentView: View {
     @AppStorage("selectedRelay") private var selectedRelay = "Beeper"
     @AppStorage("customRelayURL") private var customRelayURL = ""
     
-    @AppStorage(MacIdentityStore.enabledKey) private var macIdentityEnabled = false
     @State private var macIdentity: MacIdentity? = nil
     @State private var pendingAction: PendingAction? = nil
     @State private var showingIdentityEntry = false
@@ -99,26 +98,7 @@ struct ContentView: View {
                     Text("Beeper's relay server is recommended for most users")
                 }
                 
-                Section {
-                    Toggle("Mac Identity", isOn: Binding(
-                        get: { macIdentityEnabled },
-                        set: { newValue in
-                            if hasRegistration {
-                                pendingAction = .setIdentityEnabled(newValue)
-                            } else {
-                                setIdentityEnabled(newValue)
-                            }
-                        }
-                    ))
-                } header: {
-                    Text("Identity settings")
-                } footer: {
-                    Text(macIdentityEnabled
-                         ? "On: this phone registers as a Mac — recommended, and what Apple requires. Below are the serial and UUID it reports. See the README for what this is and when to change it."
-                         : "Off: this phone reports its own identity, which Apple no longer accepts at activation. Turn on to register as a Mac. See the README for details.")
-                }
-
-                if macIdentityEnabled, let identity = macIdentity {
+                if let identity = macIdentity {
                     Section {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Serial Number")
@@ -143,8 +123,10 @@ struct ContentView: View {
                             pendingAction = .newIdentity
                         }
                         .foregroundColor(.red)
+                    } header: {
+                        Text("Identity settings")
                     } footer: {
-                        Text("Tap Copy Identity and save it somewhere safe. Enter Identity restores a saved one later — on a new phone or after reinstalling — without registering again.")
+                        Text("This iMac serial is sent for the activate command. Tap Copy Identity and save it somewhere safe. Enter Identity restores a saved one later — on a new phone or after reinstalling — without registering again.")
                     }
                 }
                 
@@ -216,13 +198,11 @@ struct ContentView: View {
     // MARK: - Mac identity
     
     enum PendingAction: Identifiable {
-        case setIdentityEnabled(Bool)
         case newIdentity
         case resetRegistration
-        
+
         var id: String {
             switch self {
-            case .setIdentityEnabled(let on): return "setIdentityEnabled-\(on)"
             case .newIdentity: return "newIdentity"
             case .resetRegistration: return "resetRegistration"
             }
@@ -239,14 +219,8 @@ struct ContentView: View {
     }
     
     func refreshIdentity() {
-        macIdentity = macIdentityEnabled ? MacIdentityStore.currentOrCreate() : MacIdentityStore.current
+        macIdentity = MacIdentityStore.currentOrCreate()
         copiedIdentity = false
-    }
-    
-    func setIdentityEnabled(_ on: Bool) {
-        macIdentityEnabled = on
-        relayConnectionManager.logItems.log(on ? "Mac identity turned on" : "Mac identity turned off")
-        refreshIdentity()
     }
     
     func generateNewIdentity() {
@@ -264,20 +238,11 @@ struct ContentView: View {
         wantRelayConnected = false
         // Apple activates each serial number once, so a new registration
         // needs a new identity.
-        if macIdentityEnabled {
-            generateNewIdentity()
-        }
+        generateNewIdentity()
     }
     
     func confirmation(for action: PendingAction) -> Alert {
         switch action {
-        case .setIdentityEnabled(let on):
-            return Alert(
-                title: Text(on ? "Turn on Mac identity?" : "Turn off Mac identity?"),
-                message: Text("This changes the identity your current registration uses. Its renewals may stop working, and you would need to register again."),
-                primaryButton: .destructive(Text(on ? "Turn On" : "Turn Off")) { setIdentityEnabled(on) },
-                secondaryButton: .cancel()
-            )
         case .newIdentity:
             return Alert(
                 title: Text("Generate a new identity?"),
@@ -288,9 +253,7 @@ struct ContentView: View {
         case .resetRegistration:
             return Alert(
                 title: Text("Reset registration code?"),
-                message: Text(macIdentityEnabled
-                              ? "You will get a new code and a new Mac identity, and will need to register your other devices again."
-                              : "You will get a new code and will need to register your other devices again."),
+                message: Text("You will get a new code and a new Mac identity, and will need to register your other devices again."),
                 primaryButton: .destructive(Text("Reset")) { resetRegistration() },
                 secondaryButton: .cancel()
             )

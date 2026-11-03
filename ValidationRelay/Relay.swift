@@ -28,26 +28,59 @@ func getIdentifiers() -> [String: String]? {
         }
     }
     guard let softwareBuildID = buildNumber(),
-          let uniqueDeviceID = copyMobileGestaltString("UniqueDeviceID"),
           let serialNumber = copyMobileGestaltString("SerialNumber") else {
         return nil
     }
 
-    var identifiers = [
+    // Report the phone's real identity. The Mac serial is sent only for the
+    // `activate` command (see buildActivationPayload); with that implemented,
+    // Apple accepts the real serial plus a persistent UUID again.
+    let identifiers = [
         "hardware_version": machine,
         "software_name": "iPhone OS",
         "software_version": UIDevice.current.systemVersion,
         "software_build_id": softwareBuildID,
-        "unique_device_id": uniqueDeviceID,
+        "unique_device_id": getPersistentDeviceUUID(),
         "serial_number": serialNumber
     ]
-    // Report the Mac identity in place of the phone's own (see MacIdentity.swift)
-    if MacIdentityStore.isEnabled {
-        let identity = MacIdentityStore.currentOrCreate()
-        identifiers["serial_number"] = identity.serialNumber
-        identifiers["unique_device_id"] = identity.uniqueDeviceID
-    }
     return identifiers
+}
+
+/// A stable per-device UUID used as `unique_device_id` in get-version-info and
+/// get-validation-data. identifierForVendor is persistent for this app; fall
+/// back to a stored random UUID if it is ever unavailable.
+func getPersistentDeviceUUID() -> String {
+    if let vendor = UIDevice.current.identifierForVendor?.uuidString, !vendor.isEmpty {
+        return vendor.uppercased()
+    }
+    let defaults = UserDefaults.standard
+    if let saved = defaults.string(forKey: "persistentDeviceUUID"), !saved.isEmpty {
+        return saved
+    }
+    let newUUID = UUID().uuidString.uppercased()
+    defaults.set(newUUID, forKey: "persistentDeviceUUID")
+    return newUUID
+}
+
+/// The `activate` response payload: an iMac-identity `Serial` block. The 11/1
+/// OpenBubbles release sends the `activate` bridge command and expects this
+/// shape. The serial is the stored Mac identity (see MacIdentity.swift), so it
+/// survives Copy / Enter Identity backup and restore.
+func buildActivationPayload(serialNumber: String) -> [String: Any] {
+    return [
+        "Serial": [
+            "activation_randomness": UUID().uuidString.uppercased(),
+            "build_version": "22G513",
+            "activation_state": "Unactivated",
+            "device_class": "MacOS",
+            "product_type": "iMac13,1",
+            "product_version": "13.6.4",
+            "serial_number": serialNumber,
+            "unique_device_id": NSNull(),
+            "activation_device": "MacOS",
+            "ua": NSNull(),
+        ] as [String: Any]
+    ]
 }
 
 enum RegistrationSecretStore {
@@ -481,7 +514,8 @@ class RelayConnectionDelegate: WebSocketConnectionDelegate, ObservableObject {
                 }
             }
             if let command = jsonDict["command"] as? String,
-               command == "get-version-info" || command == "get-validation-data" {
+               command == "get-version-info" || command == "get-validation-data"
+                || command == "activate" || command == "sign-data" {
                 guard let requestID = jsonDict["id"] else {
                     manager.logItems.log("Received a relay request without an id", isError: true)
                     return
@@ -521,6 +555,25 @@ class RelayConnectionDelegate: WebSocketConnectionDelegate, ObservableObject {
                             }
                         }
                     }
+                }
+                if command == "activate" {
+                    let serial = MacIdentityStore.currentOrCreate().serialNumber
+                    let response = [
+                        "command": "response",
+                        "data": buildActivationPayload(serialNumber: serial),
+                        "id": requestID
+                    ] as [String : Any]
+                    manager.logItems.log("Sending activation info (serial \(serial))")
+                    sendJSON(response, connection: connection)
+                }
+                if command == "sign-data" {
+                    let response = [
+                        "command": "response",
+                        "data": [String: Any](),
+                        "id": requestID
+                    ] as [String : Any]
+                    manager.logItems.log("Sending empty sign-data response")
+                    sendJSON(response, connection: connection)
                 }
             }
         }
