@@ -50,15 +50,14 @@ Requires an iPhone with [TrollStore](https://github.com/opa334/TrollStore).
 2. Open the `.tipa` with TrollStore and tap **Install**. It installs over the
    original app and keeps its settings and registration code. On the home
    screen it shows as **Relay+**.
-3. If Mac Identity is on, open the app, tap **Copy Identity** and save it
-   somewhere safe.
+3. Open the app, tap **Copy Identity**, and save it somewhere safe.
 
 All releases are on the [Releases page](https://github.com/mkitchingh/ValidationRelay-plus/releases).
 
 To build it yourself on a Mac with Xcode, install `ldid` (`brew install ldid`)
 and run `./build.sh`.
 
-## Mac Identity
+## Identity
 
 Apple's October 2026 change means a relay has to present a **Mac** serial to
 register. This app generates and stores one iMac-format serial for that — there's
