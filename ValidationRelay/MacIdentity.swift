@@ -3,14 +3,15 @@
 //  ValidationRelay
 //
 //  Since October 2026, Apple refuses activations that present an iPhone's
-//  serial number and UDID from software, but accepts a correctly formatted
-//  iMac serial number plus a UUID. When the Mac identity is turned on, the
-//  relay reports these two values in get-version-info in place of the
-//  phone's own. Everything else is reported unchanged.
+//  serial number from software, but accepts a correctly formatted iMac serial
+//  number. This app generates and stores one iMac-format serial and sends it
+//  in the `activate` bridge command (see buildActivationPayload in Relay.swift);
+//  get-version-info and get-validation-data report the phone's real identity.
 //
-//  Apple activates each serial number once, so an identity must stay the same
-//  for as long as the registration that used it. It only changes when the
-//  user explicitly asks for a new one.
+//  Apple activates each serial number once, so the identity must stay the same
+//  for as long as the registration that used it. It only changes when the user
+//  explicitly asks for a new one, which is why Copy / Enter Identity back it up
+//  and restore it.
 //
 
 import Foundation
@@ -58,27 +59,12 @@ struct MacIdentity: Equatable {
     }
 }
 
-/// Persists the Mac identity and the setting that turns it on.
+/// Persists the generated iMac identity used for the `activate` command.
 enum MacIdentityStore {
-    static let enabledKey = "macIdentityEnabled"
     private static let serialKey = "macIdentitySerialNumber"
     private static let uuidKey = "macIdentityUniqueDeviceID"
 
     private static var defaults: UserDefaults { .standard }
-
-    /// Picks the default the first time this version runs. New installs get
-    /// the Mac identity. Installs that already have a registration keep
-    /// reporting the phone's own identity, so an update never changes what an
-    /// existing registration is using.
-    static func setDefaultIfNeeded() {
-        if defaults.object(forKey: enabledKey) != nil { return }
-        let alreadyRegistered = !(defaults.string(forKey: "savedRegistrationCode") ?? "").isEmpty
-        defaults.set(!alreadyRegistered, forKey: enabledKey)
-    }
-
-    static var isEnabled: Bool {
-        defaults.bool(forKey: enabledKey)
-    }
 
     static var current: MacIdentity? {
         guard let serial = defaults.string(forKey: serialKey),

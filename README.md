@@ -1,9 +1,11 @@
 # ValidationRelay-plus
 
 A fork of [JJTech's ValidationRelay](https://github.com/JJTech0130/ValidationRelay),
-based on his v1.8 release. This app is based off his work. This fork adds a Mac identity, so a relay iPhone can
-register new devices again after Apple's October 2026 change, and safeguards
-so that identity doesn't get lost.
+based on his v1.8 release. This app is based off his work. This fork implements
+the `activate` and `sign-data` bridge commands the current OpenBubbles release
+needs, and generates the iMac identity `activate` requires, so a relay iPhone
+keeps registering after Apple's October 2026 change — with safeguards so that
+identity doesn't get lost.
 
 It also includes the reliability fixes from
 [Xare123's pull request #17](https://github.com/JJTech0130/ValidationRelay/pull/17),
@@ -18,24 +20,24 @@ on top of v1.8 under his name.
 
 ## What's different from the original
 
-- **Mac identity.** Apple now refuses activations that report an iPhone's
-  serial number and UDID. With **Mac Identity** on, the app reports an
-  iMac-format serial number and a UUID in their place. Everything else it
-  sends, including the validation data, is unchanged.
-- **Safe for existing installs.** New installs start with Mac identity on.
-  If you update an install that already has a registration code, it stays
-  off, so nothing changes for a registration that's working. Turn it on when
-  you're ready to register again.
+- **Activate & sign-data.** The 11/1/2026 OpenBubbles release sends two new
+  bridge commands, `activate` and `sign-data`. This fork answers them:
+  `activate` returns a generated iMac-format serial (an `iMac13,1` identity),
+  and `sign-data` returns an empty response. `get-version-info` and the
+  validation data report the phone's **real** serial and a persistent UUID —
+  with `activate` implemented, Apple accepts the real serial again.
+- **Updating re-registers.** This version reports a different identity than
+  earlier Mac-identity builds, so after updating, reset the registration code
+  and register your devices once more.
 - **The identity stays the same.** It's created once and kept. Apple
   activates each serial number only once, so if the identity is lost or
   changed, registrations made with it stop renewing and must be done again.
 - **Backup and restore.** **Copy Identity** copies the serial number and UUID
   so you can store them somewhere safe. **Enter Identity** restores them, for
   example after reinstalling the app.
-- **Confirmations.** Generating a new identity, turning Mac identity on or off
-  while you have a registration, and resetting the registration code all ask
-  first. Resetting the code also creates a new identity, because a new
-  registration needs one.
+- **Confirmations.** Generating a new identity and resetting the registration
+  code both ask first. Resetting the code also creates a new identity, because
+  a new registration needs one.
 - **Reliability fixes** (Xare123, PR #17). Validation errors and timeouts
   are handled instead of crashing the app, reconnects are more dependable,
   low-level memory leaks are fixed, and the registration secret is kept in
@@ -64,33 +66,30 @@ and run `./build.sh`.
 ## Mac Identity
 
 **Why this exists:** in October 2026, Apple changed how iMessage activation
-works. It now rejects any registration that identifies itself as an **iPhone**
-through software like this. A registration that looks like a **Mac** still
-works. So instead of sending your iPhone's real serial number and device ID,
-this app sends an iMac-style serial number and ID. Apple accepts that, and your
-registration goes through. That swap is what **Mac Identity** does.
+works, and the current OpenBubbles release (11/1/2026) added an `activate`
+bridge command to match. When OpenBubbles sends `activate`, this app answers
+with a generated **iMac-format serial** (an `iMac13,1` identity). `get-version-info`
+and the validation data keep reporting the phone's **real** serial and a
+persistent UUID — with `activate` supplying the Mac serial, Apple accepts the
+real identity again.
 
-Because Apple requires it, **Mac Identity is on by default, and you leave it
-on.** On a new install there's nothing to figure out — the app registers as a
-Mac automatically. The only thing to do is tap **Copy Identity** once and keep
-the serial and ID somewhere safe.
+There's no on/off switch and nothing to configure: the iMac serial is generated
+automatically the first time it's needed. The only thing to do is tap **Copy
+Identity** once and keep the serial and UUID somewhere safe, because Apple
+activates each serial only once.
 
 Buttons under **Identity settings**:
 
-- **Copy Identity** — copies the serial and ID. Save them; this is your backup.
+- **Copy Identity** — copies the serial and UUID. Save them; this is your backup.
 - **Enter Identity** — restores a saved identity, for example after reinstalling
   or moving to a new phone, so you don't have to register again.
 - **Generate New Identity** — makes a fresh one. You'll have to register again,
   because Apple activates each serial only once.
 
-**When would it ever be off?** Only if you install this over a phone that
-already has a working registration. Then it starts off, so the update can't
-change what that phone reports and break it. Turn it on (or tap **Enter
-Identity** / **Generate New Identity**) when you're ready to register as a Mac.
-
-Turning Mac Identity off makes the phone report its own iPhone identity, which
-Apple now rejects. It's kept as an option only in case Apple's rules change; a
-normal setup leaves it on.
+**Updating from an earlier build:** older versions of this app swapped the Mac
+serial into `get-version-info` instead of using `activate`. This version reports
+a different identity, so after updating, tap **Reset Registration Code** and
+register your devices once more.
 
 ## Related
 
