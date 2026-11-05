@@ -18,6 +18,26 @@ func copyMobileGestaltString(_ key: String) -> String? {
     return answer.takeRetainedValue() as? String
 }
 
+/// Pulls the client's APNs push token out of a `get-validation-data` request.
+/// OpenBubbles may place it at the top level or nested under `data`, under any
+/// of these key spellings. Apple binds the validation data to this token.
+func extractPushToken(from jsonDict: [String: Any]) -> String? {
+    let keys = ["push-token", "pushToken", "push_token", "token"]
+    for key in keys {
+        if let token = jsonDict[key] as? String, !token.isEmpty {
+            return token
+        }
+    }
+    if let dataDict = jsonDict["data"] as? [String: Any] {
+        for key in keys {
+            if let token = dataDict[key] as? String, !token.isEmpty {
+                return token
+            }
+        }
+    }
+    return nil
+}
+
 func getIdentifiers() -> [String: String]? {
     var ustruct: utsname = utsname()
     uname(&ustruct)
@@ -530,8 +550,10 @@ class RelayConnectionDelegate: WebSocketConnectionDelegate, ObservableObject {
                     sendJSON(versionInfo, connection: connection)
                 }
                 if command == "get-validation-data" {
+                    let pushToken = extractPushToken(from: jsonDict)
+                    let udid = getIdentifiers()?["unique_device_id"]
                     manager.logItems.log("Generating validation data")
-                    generateValidationData { [weak self, weak manager] result in
+                    generateValidationData(udid: udid, pushToken: pushToken) { [weak self, weak manager] result in
                         DispatchQueue.main.async {
                             guard let self,
                                   let manager,

@@ -167,9 +167,13 @@ private func getCertificate() throws -> Data {
     }
 }
 
-private func initializeValidation(_ request: Data) throws -> Data {
+private func initializeValidation(_ request: Data, udid: String?, pushToken: String?) throws -> Data {
+    var plistBody: [String: Any] = ["session-info-request": request]
+    if let udid, !udid.isEmpty {
+        plistBody["absinthe-udid"] = udid
+    }
     let requestBody = try PropertyListSerialization.data(
-        fromPropertyList: ["session-info-request": request],
+        fromPropertyList: plistBody,
         format: .xml,
         options: 0
     )
@@ -181,6 +185,13 @@ private func initializeValidation(_ request: Data) throws -> Data {
     urlRequest.httpMethod = "POST"
     urlRequest.httpBody = requestBody
     urlRequest.setValue("application/x-apple-plist", forHTTPHeaderField: "Content-Type")
+    urlRequest.setValue("1630", forHTTPHeaderField: "x-protocol-version")
+    urlRequest.setValue("com.apple.invitation-registration", forHTTPHeaderField: "User-Agent")
+    urlRequest.setValue("*/*", forHTTPHeaderField: "Accept")
+    urlRequest.setValue("en-US,en;q=0.9", forHTTPHeaderField: "Accept-Language")
+    if let pushToken, !pushToken.isEmpty {
+        urlRequest.setValue(pushToken, forHTTPHeaderField: "x-push-token")
+    }
 
     let data = try fetchValidationData(urlRequest)
     guard let plist = try PropertyListSerialization.propertyList(
@@ -194,7 +205,7 @@ private func initializeValidation(_ request: Data) throws -> Data {
     return sessionInfo
 }
 
-private func generateValidationData() throws -> Data {
+private func generateValidationData(udid: String?, pushToken: String?) throws -> Data {
     let certificate = try getCertificate()
     var validationContext: UInt64 = 0
     var sessionRequest: NSData?
@@ -206,7 +217,7 @@ private func generateValidationData() throws -> Data {
         throw ValidationDataError.nativeOutputMissing("NACInit")
     }
 
-    let sessionInfo = try initializeValidation(sessionRequest as Data)
+    let sessionInfo = try initializeValidation(sessionRequest as Data, udid: udid, pushToken: pushToken)
     status = NACKeyEstablishment(validationContext, sessionInfo)
     guard status == 0 else {
         throw ValidationDataError.nativeFailure("NACKeyEstablishment", Int(status))
@@ -224,11 +235,13 @@ private func generateValidationData() throws -> Data {
 }
 
 func generateValidationData(
+    udid: String?,
+    pushToken: String?,
     completion: @escaping (Result<Data, Error>) -> Void
 ) {
     validationQueue.async {
         do {
-            completion(.success(try generateValidationData()))
+            completion(.success(try generateValidationData(udid: udid, pushToken: pushToken)))
         } catch {
             completion(.failure(error))
         }
