@@ -32,10 +32,10 @@ func getIdentifiers() -> [String: String]? {
         return nil
     }
 
-    // Report the phone's real identity. The Mac serial is sent only for the
-    // `activate` command (see buildActivationPayload); with that implemented,
-    // Apple accepts the real serial plus a persistent UUID again.
-    let identifiers = [
+    // Default: report the phone's real identity, which lets OpenBubbles offer
+    // phone-number registration. The Mac serial is sent only for `activate`
+    // (see buildActivationPayload).
+    var identifiers = [
         "hardware_version": machine,
         "software_name": "iPhone OS",
         "software_version": UIDevice.current.systemVersion,
@@ -43,6 +43,22 @@ func getIdentifiers() -> [String: String]? {
         "unique_device_id": getPersistentDeviceUUID(),
         "serial_number": serialNumber
     ]
+    // OpenBubbles builds Apple's device-activation request out of both bridge
+    // answers: the device class and model come from `activate` (a Mac), while
+    // the serial number, OS version and build come from here. Reporting the
+    // phone's values for those three produces an inconsistent profile — an
+    // iMac13,1 running iOS — which Apple's activation server refuses, leaving
+    // no push certificate and the misleading "Token not found" that follows.
+    // With this on, all four fields describe the same Mac as `activate`.
+    // hardware_version and software_name stay the phone's, so OpenBubbles
+    // still classifies the relay as an iPhone and keeps phone-number setup.
+    if MacIdentityStore.isEnabled {
+        let identity = MacIdentityStore.currentOrCreate()
+        identifiers["serial_number"] = identity.serialNumber
+        identifiers["unique_device_id"] = identity.uniqueDeviceID
+        identifiers["software_version"] = MacIdentity.macProductVersion
+        identifiers["software_build_id"] = MacIdentity.macBuildVersion
+    }
     return identifiers
 }
 

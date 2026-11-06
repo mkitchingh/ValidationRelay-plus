@@ -20,6 +20,12 @@ struct MacIdentity: Equatable {
     let serialNumber: String
     let uniqueDeviceID: String
 
+    /// The macOS version and build reported alongside an iMac13,1 identity.
+    /// These must match the values in buildActivationPayload (Relay.swift), so
+    /// that `activate` and `get-version-info` describe the same machine.
+    static let macProductVersion = "13.6.4"
+    static let macBuildVersion = "22G513"
+
     // iMac13,1 model codes (the last 4 characters of a 12-character serial)
     private static let modelCodes = [
         "DNCT", "DNCR", "DNML", "DNMM", "F8QM", "F8QN", "F9RN",
@@ -65,6 +71,34 @@ enum MacIdentityStore {
     private static let uuidKey = "macIdentityUniqueDeviceID"
 
     private static var defaults: UserDefaults { .standard }
+
+    /// When on, get-version-info reports this identity's serial and UUID plus
+    /// the macOS version and build, instead of the phone's. OpenBubbles builds
+    /// Apple's activation request out of both bridge answers, so with this off
+    /// the request claims a Mac model with an iPhone serial and iOS version —
+    /// a profile Apple refuses. hardware_version and software_name are left as
+    /// the phone's, so OpenBubbles still treats the relay as an iPhone.
+    private static let enabledKey = "macIdentityEnabled"
+
+    static var isEnabled: Bool {
+        defaults.bool(forKey: enabledKey)
+    }
+
+    static func setEnabled(_ enabled: Bool) {
+        defaults.set(enabled, forKey: enabledKey)
+    }
+
+    /// Picks the starting value the first time the app runs, and never again.
+    /// A fresh install has no registration yet, so it starts on and registers
+    /// as a Mac. An install that already has a registration starts off and
+    /// keeps reporting the phone's identity, so updating never changes what an
+    /// existing registration is using. Once the user sets it themselves, their
+    /// choice stands.
+    static func setDefaultIfNeeded() {
+        if defaults.object(forKey: enabledKey) != nil { return }
+        let alreadyRegistered = !(defaults.string(forKey: "savedRegistrationCode") ?? "").isEmpty
+        defaults.set(!alreadyRegistered, forKey: enabledKey)
+    }
 
     static var current: MacIdentity? {
         guard let serial = defaults.string(forKey: serialKey),
