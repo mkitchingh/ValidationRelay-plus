@@ -129,7 +129,7 @@ struct ContentView: View {
                     } header: {
                         Text("Identity settings")
                     } footer: {
-                        Text("Turn on Report as Mac if OpenBubbles can't activate (\"Token not found\"), then reset the registration code. Copy Identity backs up this serial and UUID; Enter Identity restores them later.")
+                        Text("Report as Mac is used for new registrations. Existing registrations keep working with it off. Copy Identity backs up this serial and UUID; Enter Identity restores them.")
                     }
                 }
                 
@@ -156,7 +156,7 @@ struct ContentView: View {
                 }
 
                 Section {
-                    Text("Relay+ v\(appVersion)-test")
+                    Text("Relay+ v\(appVersion)")
                         .font(.footnote)
                         .foregroundColor(.secondary)
                         .frame(maxWidth: .infinity, alignment: .center)

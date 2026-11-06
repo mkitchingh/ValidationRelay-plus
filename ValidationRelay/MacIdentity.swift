@@ -88,6 +88,18 @@ enum MacIdentityStore {
         defaults.set(enabled, forKey: enabledKey)
     }
 
+    /// Picks the starting value the first time the app runs, and never again.
+    /// A fresh install has no registration yet, so it starts on and registers
+    /// as a Mac. An install that already has a registration starts off and
+    /// keeps reporting the phone's identity, so updating never changes what an
+    /// existing registration is using. Once the user sets it themselves, their
+    /// choice stands.
+    static func setDefaultIfNeeded() {
+        if defaults.object(forKey: enabledKey) != nil { return }
+        let alreadyRegistered = !(defaults.string(forKey: "savedRegistrationCode") ?? "").isEmpty
+        defaults.set(!alreadyRegistered, forKey: enabledKey)
+    }
+
     static var current: MacIdentity? {
         guard let serial = defaults.string(forKey: serialKey),
               let uuid = defaults.string(forKey: uuidKey),

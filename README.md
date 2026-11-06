@@ -21,9 +21,10 @@ on top of v1.8 under his name.
 
 - **Current OpenBubbles compatibility.** Updated for the 11/1/2026 OpenBubbles
   release.
-- **Updating re-registers.** This version reports a different identity than
-  earlier builds, so after updating, reset the registration code and register
-  your devices once more.
+- **Report as Mac.** Apple's October 2026 change means a relay has to present a
+  Mac identity to register. New installs have this on and register as a Mac. An
+  existing registration keeps working with it off, so updating doesn't disturb
+  one that already works.
 - **The identity stays the same.** It's created once and kept. Apple
   activates each serial number only once, so if the identity is lost or
   changed, registrations made with it stop renewing and must be done again.
@@ -59,11 +60,19 @@ and run `./build.sh`.
 
 ## Identity
 
-Apple's October 2026 change means a relay has to present a **Mac** serial to
-register. This app generates and stores one iMac-format serial for that — there's
-no switch and nothing to configure. The one thing to do is tap **Copy Identity**
-once and keep the serial and UUID somewhere safe, because Apple activates each
-serial only once.
+Apple's October 2026 change means a relay has to present a **Mac** identity to
+register. The app generates and stores one, and keeps it.
+
+**Report as Mac** controls whether that identity is reported:
+
+- **New installs** have it **on** and register as a Mac. Nothing to set up.
+- **Existing registrations** have it **off**, so updating doesn't disturb a
+  registration that already works. Leave it off while it's working.
+- If you need to register again from scratch, turn it on and tap **Reset
+  Registration Code**.
+
+Apple activates each serial only once, so tap **Copy Identity** and keep the
+serial and UUID somewhere safe.
 
 Buttons under **Identity settings**:
 
@@ -72,9 +81,6 @@ Buttons under **Identity settings**:
   or moving to a new phone, so you don't have to register again.
 - **Generate New Identity** — makes a fresh one. You'll have to register again,
   because Apple activates each serial only once.
-
-**Updating from an earlier build** reports a different identity, so tap **Reset
-Registration Code** and register your devices once more.
 
 ## Related
 
