@@ -129,7 +129,7 @@ struct ContentView: View {
                     } header: {
                         Text("Identity settings")
                     } footer: {
-                        Text("This iMac serial is sent for the activate command. Turn on Report as Mac if OpenBubbles fails to activate (\"Token not found\"): the serial and OS reported to Apple then match the Mac that activate claims, instead of mixing in this phone's. Turn it back off once activation succeeds, so phone-number setup still works. Tap Copy Identity and save it somewhere safe. Enter Identity restores a saved one later — on a new phone or after reinstalling — without registering again.")
+                        Text("Turn on Report as Mac if OpenBubbles can't activate (\"Token not found\"), then reset the registration code. Copy Identity backs up this serial and UUID; Enter Identity restores them later.")
                     }
                 }
                 
