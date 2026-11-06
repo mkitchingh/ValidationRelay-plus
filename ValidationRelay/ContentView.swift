@@ -16,6 +16,8 @@ struct ContentView: View {
     @AppStorage("customRelayURL") private var customRelayURL = ""
     
     @State private var macIdentity: MacIdentity? = nil
+    /// Backed by the same UserDefaults key MacIdentityStore.isEnabled reads.
+    @AppStorage("macIdentityEnabled") private var macIdentityEnabled = false
     @State private var pendingAction: PendingAction? = nil
     @State private var showingIdentityEntry = false
     @State private var copiedIdentity = false
@@ -100,6 +102,7 @@ struct ContentView: View {
                 
                 if let identity = macIdentity {
                     Section {
+                        Toggle("Report as Mac", isOn: $macIdentityEnabled)
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Serial Number")
                             Text(identity.serialNumber)
@@ -126,7 +129,7 @@ struct ContentView: View {
                     } header: {
                         Text("Identity settings")
                     } footer: {
-                        Text("This iMac serial is sent for the activate command. Tap Copy Identity and save it somewhere safe. Enter Identity restores a saved one later — on a new phone or after reinstalling — without registering again.")
+                        Text("This iMac serial is sent for the activate command. Turn on Report as Mac if OpenBubbles fails to activate (\"Token not found\"): the serial and OS reported to Apple then match the Mac that activate claims, instead of mixing in this phone's. Turn it back off once activation succeeds, so phone-number setup still works. Tap Copy Identity and save it somewhere safe. Enter Identity restores a saved one later — on a new phone or after reinstalling — without registering again.")
                     }
                 }
                 
@@ -153,7 +156,7 @@ struct ContentView: View {
                 }
 
                 Section {
-                    Text("Relay+ v\(appVersion)")
+                    Text("Relay+ v\(appVersion)-test")
                         .font(.footnote)
                         .foregroundColor(.secondary)
                         .frame(maxWidth: .infinity, alignment: .center)
