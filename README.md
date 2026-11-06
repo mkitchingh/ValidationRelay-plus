@@ -44,7 +44,7 @@ on top of v1.8 under his name.
 
 ## Install
 
-Requires an iPhone with [TrollStore](https://github.com/opa334/TrollStore).
+Requires an iPhone with [TrollStore](https://ios.cfw.guide/installing-trollstore/).
 
 1. Download **[ValidationRelay.tipa](https://github.com/mkitchingh/ValidationRelay-plus/releases/latest/download/ValidationRelay.tipa)**
    (always the latest release). Do this on the iPhone, or AirDrop the file to it.
