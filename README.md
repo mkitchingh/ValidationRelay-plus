@@ -1,4 +1,4 @@
-# ValidationRelay-plus
+# Validation Relay+
 
 Originaly a fork of [JJTech's ValidationRelay](https://github.com/JJTech0130/ValidationRelay),
 based on his v1.8 release. This app is based off his work. This fork keeps a
