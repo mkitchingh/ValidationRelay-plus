@@ -1,6 +1,6 @@
 # ValidationRelay-plus
 
-A fork of [JJTech's ValidationRelay](https://github.com/JJTech0130/ValidationRelay),
+Originaly a fork of [JJTech's ValidationRelay](https://github.com/JJTech0130/ValidationRelay),
 based on his v1.8 release. This app is based off his work. This fork keeps a
 relay iPhone registering after Apple's October 2026 change and stays compatible
 with the current OpenBubbles release, with safeguards so the identity it uses
