@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A community guide to registering a phone number with OpenBubbles using an iPhone relay, updated for Apple's October 2026 activation change.">
+<meta name="color-scheme" content="light dark">
+<title>Phone Number Registration</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  /* Layout: one reading column. Strong section labels, numbered steps on an
+     absolute-positioned rail, semantic color (go / caution / stop) kept
+     separate from the single blue accent. */
+  :root{
+    --bg:#f5f6f8;
+    --surface:#ffffff;
+    --surface-2:#eef1f5;
+    --fg:#171c24;
+    --fg-2:#596273;
+    --border:#dfe4ec;
+    --accent:#0b72f0;
+    --accent-fg:#0a56b8;
+    --accent-weak:#e8f1fe;
+    --go:#17874f;
+    --go-weak:#e4f4ec;
+    --caution:#9a6410;
+    --caution-weak:#fbf0dd;
+    --stop:#b63434;
+    --stop-weak:#fbe9e9;
+    --display:"Archivo",ui-sans-serif,system-ui,"Segoe UI",sans-serif;
+    --body:"Figtree",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#0e131c;
+    --surface:#161d29;
+    --surface-2:#1d2634;
+    --fg:#e8ecf3;
+    --fg-2:#9aa5b8;
+    --border:#283343;
+    --accent:#4e9bff;
+    --accent-fg:#8dc0ff;
+    --accent-weak:rgba(78,155,255,.12);
+    --go:#45c488;
+    --go-weak:rgba(69,196,136,.13);
+    --caution:#e2a94f;
+    --caution-weak:rgba(226,169,79,.13);
+    --stop:#f06b6b;
+    --stop-weak:rgba(240,107,107,.13);
+    color-scheme:dark;
+  }}
+  :root[data-theme="dark"]{
+    --bg:#0e131c;
+    --surface:#161d29;
+    --surface-2:#1d2634;
+    --fg:#e8ecf3;
+    --fg-2:#9aa5b8;
+    --border:#283343;
+    --accent:#4e9bff;
+    --accent-fg:#8dc0ff;
+    --accent-weak:rgba(78,155,255,.12);
+    --go:#45c488;
+    --go-weak:rgba(69,196,136,.13);
+    --caution:#e2a94f;
+    --caution-weak:rgba(226,169,79,.13);
+    --stop:#f06b6b;
+    --stop-weak:rgba(240,107,107,.13);
+    color-scheme:dark;
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  img{max-width:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--fg);
+    font-family:var(--body);font-size:16.5px;line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width:46rem;margin:0 auto;
+    padding-left:max(16px,env(safe-area-inset-left,0px));
+    padding-right:max(16px,env(safe-area-inset-right,0px));
+  }
+  h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+  h1{font-size:clamp(2rem,6vw,2.6rem);line-height:1.06;font-weight:700;letter-spacing:-.02em}
+  h2{font-size:clamp(1.5rem,4.2vw,1.78rem);line-height:1.14;font-weight:700;letter-spacing:-.015em}
+  h3{font-size:1.08rem;font-weight:600;letter-spacing:-.005em}
+  p{margin:0}
+  a{color:var(--accent-fg);font-weight:500;text-decoration:none;
+    border-bottom:1px solid color-mix(in srgb,var(--accent) 35%,transparent)}
+  a:hover{border-bottom-color:var(--accent)}
+  a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+  strong{font-weight:600}
+  code{font-family:var(--mono);font-size:.84em;background:var(--surface-2);
+    padding:.14em .38em;border-radius:4px;word-break:break-word}
+  .muted{color:var(--fg-2)}
+  .sm{font-size:.93rem}
+
+  /* header */
+  header{background:var(--surface);border-bottom:1px solid var(--border)}
+  header .wrap{padding-block:2.6rem 2.2rem;display:flex;flex-direction:column;gap:1.15rem}
+  .chips{display:flex;flex-wrap:wrap;gap:.45rem;font-family:var(--mono);
+    font-size:.68rem;letter-spacing:.07em;text-transform:uppercase}
+  .chip{border:1px solid var(--border);border-radius:999px;padding:.26rem .62rem;
+    line-height:1;color:var(--fg-2);display:inline-flex;align-items:center}
+  .chip.cur{color:var(--go);border-color:color-mix(in srgb,var(--go) 45%,transparent);
+    background:var(--go-weak)}
+  .lede{font-size:1.12rem;color:var(--fg-2);max-width:62ch}
+
+  /* sections */
+  main .wrap{padding-block:0 .5rem}
+  section{padding-block:2.4rem;border-top:1px solid var(--border);
+    display:flex;flex-direction:column;gap:.9rem}
+  section:first-of-type{border-top:none}
+  .eyebrow{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;
+    font-family:var(--mono);font-size:.88rem;font-weight:600;letter-spacing:.07em;
+    text-transform:uppercase;color:var(--fg);margin-bottom:-.2rem}
+  .eyebrow .n{font-weight:700;color:var(--surface);background:var(--accent);
+    font-size:.84rem;border-radius:6px;padding:.22rem .5rem;line-height:1.1;
+    letter-spacing:.04em}
+  .head{display:flex;flex-direction:column;align-items:flex-start;gap:.45rem}
+  ul{margin:0;padding-left:1.25rem;display:flex;flex-direction:column;gap:.4rem}
+  li{margin:0}
+
+  /* numbered steps — rail is absolute so inline markup inside a step
+     stays in normal flow and never collides */
+  ol.steps{list-style:none;margin:.2rem 0 0;padding:0;counter-reset:s;
+    display:flex;flex-direction:column;gap:1rem}
+  ol.steps>li{counter-increment:s;position:relative;padding-left:2.8rem;min-width:0}
+  ol.steps>li::before{content:counter(s);position:absolute;left:0;top:.1rem;
+    font-family:var(--mono);font-size:.78rem;font-weight:600;
+    color:var(--accent);background:var(--accent-weak);border-radius:6px;
+    width:1.9rem;height:1.55rem;display:flex;align-items:center;justify-content:center}
+  ol.steps ul{margin-top:.45rem}
+  ol.steps p{margin-top:.45rem}
+  ol.steps .ex{margin-top:.5rem}
+
+  /* callouts */
+  .call{border:1px solid var(--border);border-radius:12px;padding:1rem 1.15rem;
+    background:var(--surface);display:flex;flex-direction:column;gap:.45rem}
+  .call .t{font-family:var(--display);font-weight:700;font-size:1.02rem}
+  .call.note{background:var(--accent-weak);border-color:color-mix(in srgb,var(--accent) 28%,transparent)}
+  .call.note .t{color:var(--accent-fg)}
+  .call.go{background:var(--go-weak);border-color:color-mix(in srgb,var(--go) 32%,transparent)}
+  .call.go .t{color:var(--go)}
+  .call.caution{background:var(--caution-weak);border-color:color-mix(in srgb,var(--caution) 34%,transparent)}
+  .call.caution .t{color:var(--caution)}
+  .call.stop{background:var(--stop-weak);border-color:color-mix(in srgb,var(--stop) 32%,transparent)}
+  .call.stop .t{color:var(--stop)}
+
+  .status{display:inline-flex;align-items:center;gap:.4rem;
+    font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;
+    border-radius:999px;padding:.28rem .62rem;line-height:1;font-weight:600;
+    background:var(--caution-weak);color:var(--caution)}
+  .dot{width:.42rem;height:.42rem;border-radius:50%;background:currentColor;flex:none}
+
+  /* error table */
+  .tablewrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;
+    background:var(--surface)}
+  table{border-collapse:collapse;width:100%;font-size:.94rem}
+  th,td{text-align:left;padding:.64rem .85rem;border-bottom:1px solid var(--border);
+    vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  th{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--fg-2);font-weight:600;background:var(--surface-2)}
+  td.code{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;
+    font-weight:600}
+
+  /* example box */
+  .ex{font-family:var(--mono);font-size:.86rem;background:var(--surface-2);
+    border:1px solid var(--border);border-radius:9px;padding:.7rem .85rem;
+    overflow-x:auto;white-space:nowrap;line-height:1.7}
+
+  footer{background:var(--surface);border-top:1px solid var(--border)}
+  footer .wrap{padding-block:1.9rem 2.6rem;display:flex;flex-direction:column;gap:.9rem}
+  .links{display:flex;flex-wrap:wrap;gap:.45rem 1.1rem;font-size:.93rem}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="chips">
+      <span class="chip">Community guide</span>
+      <span class="chip cur">Updated November 2026</span>
+      <span class="chip">Unofficial &middot; not affiliated with OpenBubbles</span>
+    </div>
+    <h1>Phone Number Registration</h1>
+    <p class="lede">How to register a phone number with OpenBubbles using an iPhone as a relay &mdash; written for how things actually work after Apple's October 2026 activation change.</p>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <section>
+      <div class="eyebrow"><span>About this guide</span></div>
+      <div class="head">
+        <h2>What this covers</h2>
+      </div>
+      <p>Registering a phone number with OpenBubbles yourself, using an iPhone you already have as the relay. It's free, and it needs a phone you can leave plugged in.</p>
+      <p>OpenBubbles also offers a paid hosted option, where they run the iPhone for you. If that's the route you'd rather take, it's described in their <a href="https://openbubbles.app/blog/openbubbles_hosted.html" target="_blank" rel="noopener">OpenBubbles Hosted</a> write-up.</p>
+      <div class="call note">
+        <p class="t">Unofficial</p>
+        <p class="sm">I'm not affiliated with OpenBubbles. This is a community guide, and the third-party tools it links to are used at your own risk.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="eyebrow"><span class="n">01</span><span>Before you start</span></div>
+      <div class="head">
+        <h2>A few things first</h2>
+      </div>
+      <h3>On the Apple Account you'll register</h3>
+      <ul>
+        <li>Turn off <strong>Advanced Data Protection</strong> &mdash; Settings &rarr; your name &rarr; iCloud &rarr; Advanced Data Protection.</li>
+        <li>Turn off <strong>Contact Key Verification</strong> &mdash; Settings &rarr; your name &rarr; Contact Key Verification.</li>
+      </ul>
+      <p class="sm muted">Both of these will block registration if they're left on, and the error you get won't say so.</p>
+      <h3>On the iPhone acting as the relay</h3>
+      <ul>
+        <li>Sign out of any Apple Account on it, and turn off <strong>FaceTime</strong> and <strong>iMessage</strong>.</li>
+        <li>Leave it powered on and connected to Wi&#8209;Fi or Ethernet. The relay has to keep running to keep the number registered.</li>
+      </ul>
+    </section>
+
+    <section>
+      <div class="eyebrow"><span class="n">02</span><span>Method 1 &middot; no jailbreak needed</span></div>
+      <div class="head">
+        <h2>Validation Relay+ on TrollStore</h2>
+      </div>
+      <p>This method needs <a href="https://ios.cfw.guide/installing-trollstore/" target="_blank" rel="noopener">TrollStore</a>, which covers <strong>iOS 14 through iOS 17.0</strong>. No jailbreak required.</p>
+      <p><a href="https://github.com/mkitchingh/ValidationRelay-plus" target="_blank" rel="noopener">Validation Relay+</a> is a fork of JJTech's ValidationRelay, updated for Apple's October 2026 change. It installs over the original and keeps its settings.</p>
+
+      <h3>Setup</h3>
+      <ol class="steps">
+        <li>Install <strong>TrollStore</strong> on the relay iPhone, if it isn't already.</li>
+        <li>If <strong>TestFlight</strong> is installed, delete it. TrollStore needs its slot.</li>
+        <li>Download <a href="https://github.com/mkitchingh/ValidationRelay-plus/releases/latest/download/ValidationRelay.tipa" target="_blank" rel="noopener">ValidationRelay.tipa</a> on the iPhone, or AirDrop it there.</li>
+        <li>Open the <code>.tipa</code> with TrollStore and tap <strong>Install</strong>. On the home screen it shows up as <strong>Validation Relay+</strong>.</li>
+        <li>Open it and leave <strong>Report as Mac</strong> on. A fresh install turns it on for you &mdash; that's what makes registration work now.</li>
+        <li>Tap <strong>Copy Identity</strong> and paste it somewhere safe. More on why below.</li>
+        <li>Turn <strong>Relay</strong> on. The screen shows a <strong>Registration Code</strong> that looks like this:
+          <div class="ex">K7MP-3RTD-9WQX-F4HN</div>
+        </li>
+        <li>Enter that code in OpenBubbles. If you're switching from existing hardware, it's under <strong>Settings &rarr; Change Hardware</strong>.</li>
+        <li>Back in Validation Relay+, turn on <strong>Keep Awake</strong> and use <strong>Dim Display</strong>. Leave the app in the foreground.</li>
+      </ol>
+
+      <div class="call go">
+        <p class="t">Report as Mac</p>
+        <p class="sm">Since October 2026 Apple refuses activations that look like they came from an iPhone, but accepts a Mac. Validation Relay+ generates a Mac identity and presents that instead. New installs have this on and need nothing from you.</p>
+        <p class="sm">If you're <strong>updating an install that's already registered and working (or recently working)</strong>, it arrives off on purpose, so the update doesn't disturb what's working. Leave it off while it works. If you ever need to register from scratch, turn it on first and then tap <strong>Reset Registration Code</strong>.</p>
+      </div>
+
+      <div class="call caution">
+        <p class="t">Back up your identity</p>
+        <p class="sm">Apple activates each serial number <strong>once</strong>. If the app's identity is lost or regenerated, the registration made with it stops renewing and you have to register again. <strong>Copy Identity</strong> gives you the serial and UUID &mdash; keep them somewhere safe:</p>
+        <div class="ex">Serial: C02K7X9MDNCR<br>UUID: 9F3C1A42-7B55-4E0D-A1C8-62D4E7B09F11</div>
+        <p class="sm"><strong>Enter Identity</strong> puts a saved one back, which is how you move to a new phone or recover after a reinstall without re-registering.</p>
+      </div>
+
+      <p class="sm muted">There's also <a href="https://github.com/jakecrowley/ValidationRelay" target="_blank" rel="noopener">jakecrowley/ValidationRelay</a>, a separate fork of the same app. It's worth knowing about, though it may not currently register successfully in all cases.</p>
+
+      <h3>Optional, if you're jailbroken</h3>
+      <p class="sm">None of these are required, and they may not be compatible with every iOS version.</p>
+      <ul class="sm">
+        <li><a href="https://havoc.app/package/advancedbright" target="_blank" rel="noopener">AdvancedBrightnessSlider</a> &mdash; dims further than iOS allows, which lowers burn-in risk on a screen that stays on.</li>
+        <li><a href="https://github.com/lich4/ChargeLimiter" target="_blank" rel="noopener">ChargeLimiter</a> &mdash; caps the charge level, which is kinder to a phone that lives on a cable.</li>
+        <li><a href="https://havoc.app/package/immortalizer" target="_blank" rel="noopener">Immortalizer</a> &mdash; keeps the relay app alive with the screen off.</li>
+      </ul>
+    </section>
+
+    <section>
+      <div class="eyebrow"><span class="n">03</span><span>Method 2 &middot; jailbreak</span></div>
+      <div class="head">
+        <h2>relayserver, as a background service</h2>
+      </div>
+      <p>On a jailbroken phone, relayserver runs as a background service instead of an app you keep open in the foreground. It covers <strong>iOS 14 and up</strong>, with both rootful (<code>-arm</code>) and rootless (<code>-arm64</code>) builds.</p>
+      <ol class="steps">
+        <li>Open <strong>Sileo</strong> &mdash; it comes with the jailbreak, so there's nothing to install first &mdash; and add this source under Sources &rarr; Add:
+          <div class="ex">https://jakecrowley.github.io/relayserver/</div>
+          <p class="sm muted">If your jailbreak uses Zebra or Cydia instead, add the same URL there. They all work the same way.</p>
+        </li>
+        <li>Install <code>dev.copper.relayserver</code>. Sileo picks the rootful or rootless build to match your jailbreak.
+          <p class="sm muted">If you'd rather install the <code>.deb</code> by hand, the builds are on the <a href="https://github.com/jakecrowley/relayserver/releases" target="_blank" rel="noopener">relayserver releases</a> page.</p>
+        </li>
+        <li>It starts on its own once installed. Nothing to keep open, and it comes back after a reboot.</li>
+        <li>Read the registration code out of <code>/var/mobile/config.json</code>. <a href="https://havoc.app/package/filza" target="_blank" rel="noopener">Filza</a> is the easy way to open it.</li>
+        <li>Enter that code in OpenBubbles. If you're switching from existing hardware, it's under <strong>Settings &rarr; Change Hardware</strong>.</li>
+      </ol>
+      <p class="sm muted">If it isn't connecting, it logs to <code>/var/mobile/relayserver.log</code>.</p>
+    </section>
+
+    <section>
+      <div class="eyebrow"><span class="n">04</span><span>If it doesn't take</span></div>
+      <div class="head">
+        <h2>Common errors</h2>
+      </div>
+      <p>Registration failures usually come back as a numeric code from Apple. The useful ones:</p>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr><th>Code</th><th>What it means</th><th>What to do</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="code">6001</td>
+              <td>Key data incompatible</td>
+              <td>Advanced Data Protection or Contact Key Verification is still on. Turn both off, then try again.</td>
+            </tr>
+            <tr>
+              <td class="code">6005</td>
+              <td>Authentication rejected</td>
+              <td>Often a temporary block after repeated attempts. Stop trying for a few hours.</td>
+            </tr>
+            <tr>
+              <td class="code">6009</td>
+              <td>Account temporarily disabled</td>
+              <td>Apple has flagged the account. Appeal at <a href="https://apple.co/IMFT" target="_blank" rel="noopener">apple.co/IMFT</a>.</td>
+            </tr>
+            <tr>
+              <td class="code">6004</td>
+              <td>Try again</td>
+              <td>Transient. Wait a bit and retry.</td>
+            </tr>
+            <tr>
+              <td class="code">5052</td>
+              <td>Number was just removed</td>
+              <td>Give it some time before re-registering the same number.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="sm">On Validation Relay+, also check that <strong>Report as Mac</strong> is on, then tap <strong>Reset Registration Code</strong> and enter the new code in OpenBubbles. Resetting also generates a new identity, so copy the old one first if you might want it back.</p>
+      <p class="sm muted">Keep in mind that repeated failed attempts are what gets an account soft-banned. Change one thing, then wait.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="sm muted">An unofficial community guide, kept current as the apps and relays change. Not affiliated with or endorsed by OpenBubbles, Beeper, or Apple. Third-party tools linked here are used at your own risk. All names and trademarks belong to their respective owners.</p>
+  </div>
+</footer>
+</body>
+</html>
