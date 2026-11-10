@@ -65,9 +65,9 @@ register. The app generates and stores one, and keeps it.
 
 **Report as Mac** controls whether that identity is reported:
 
-- **New installs** have it **on** and register as a Mac. Nothing to set up.
+- **New installs** have it **on** and spoof a Mac registration code where needed. It will still register your phone number. Nothing to set up. Leave it enabled. 
 - **Existing registrations** have it **off**, so updating doesn't disturb a
-  registration that already works. Leave it off while it's working.
+  registration that already works. Leave it off while it's working. If you run into errors, enable it. 
 - If you need to register again from scratch, turn it on and tap **Reset
   Registration Code**.
 
