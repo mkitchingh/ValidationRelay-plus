@@ -58,7 +58,7 @@ All releases are on the [Releases page](https://github.com/mkitchingh/Validation
 To build it yourself on a Mac with Xcode, install `ldid` (`brew install ldid`)
 and run `./build.sh`.
 
-## Identity
+## "Report as Mac" option
 
 Apple's October 2026 change means a relay has to present a **Mac** identity to
 register. The app generates and stores one, and keeps it.
