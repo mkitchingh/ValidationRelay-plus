@@ -8,7 +8,7 @@ doesn't get lost.
 
 It also includes the reliability fixes from
 [Xare123's pull request #17](https://github.com/JJTech0130/ValidationRelay/pull/17),
-which hasn't been merged into the original yet. His commits are applied
+which wasn't been merged into the original JJTech release. His commits are applied
 on top of v1.8 under his name.
 
 <p align="center">
