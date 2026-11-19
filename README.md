@@ -24,7 +24,7 @@ on top of v1.8 under his name.
 - **Report as Mac.** Apple's October 2026 change means a relay has to present a
   Mac identity to register. New installs have this on and register as a Mac. An
   existing registration keeps working with it off, so updating doesn't disturb
-  one that already works.
+  one that already works. It still registers your phone number. 
 - **The identity stays the same.** It's created once and kept. Apple
   activates each serial number only once, so if the identity is lost or
   changed, registrations made with it stop renewing and must be done again.
@@ -61,7 +61,7 @@ and run `./build.sh`.
 ## "Report as Mac" option
 
 Apple's October 2026 change means a relay has to present a **Mac** identity to
-register. The app generates and stores one, and keeps it.
+register. The app generates and stores one, and keeps it. It still registers you phone number. 
 
 **Report as Mac** controls whether that identity is reported:
 
