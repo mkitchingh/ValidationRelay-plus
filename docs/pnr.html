@@ -280,7 +280,7 @@
       <div class="head">
         <h2>relayserver, as a background service</h2>
       </div>
-      <p>On a jailbroken phone, relayserver runs as a background service instead of an app you keep open in the foreground. It covers <strong>iOS 10 and up</strong>, with both rootful (<code>-arm</code>) and rootless (<code>-arm64</code>) builds.</p>
+      <p>On a jailbroken phone, relayserver runs as a background service instead of an app you keep open in the foreground. A companion <strong>RelayServer</strong> app shows its status and registration code. It covers <strong>iOS 10 and up</strong>, with both rootful (<code>-arm</code>) and rootless (<code>-arm64</code>) builds.</p>
       <p>Not jailbroken yet? <a href="https://ios.cfw.guide/get-started/select-iphone/" target="_blank" rel="noopener">ios.cfw.guide</a> walks you through picking the right jailbreak for your iPhone model and iOS version.</p>
       <ol class="steps">
         <li>Open <strong>Sileo</strong> &mdash; it comes with the jailbreak, so there's nothing to install first &mdash; and add this source under Sources &rarr; Add:
@@ -290,11 +290,13 @@
         <li>Install <code>dev.copper.relayserver</code>. Sileo picks the rootful or rootless build to match your jailbreak.
           <p class="sm muted">If you'd rather install the <code>.deb</code> by hand, the builds are on the <a href="https://github.com/jakecrowley/relayserver/releases" target="_blank" rel="noopener">relayserver releases</a> page.</p>
         </li>
-        <li>It starts on its own once installed. Nothing to keep open, and it comes back after a reboot.</li>
-        <li>Read the registration code out of <code>/var/mobile/config.json</code>. <a href="https://www.tigisoftware.com/default/?page_id=78" target="_blank" rel="noopener">Filza</a> is the easy way to open it.</li>
+        <li>It starts on its own once installed. Nothing to keep open, and it comes back after a reboot. A <strong>RelayServer</strong> app is installed with it.</li>
+        <li>Open the <strong>RelayServer</strong> app and copy the <strong>Relay Code</strong>.
+          <p class="sm muted">The code is also still in <code>/var/mobile/config.json</code> if you ever need it without the app.</p>
+        </li>
         <li>Enter that code in OpenBubbles. If you're switching from existing hardware, it's under <strong>Settings &rarr; Change Hardware</strong>.</li>
       </ol>
-      <p class="sm muted">If it isn't connecting, it logs to <code>/var/mobile/relayserver.log</code>.</p>
+      <p class="sm muted">If it isn't connecting, the RelayServer app shows the connection status and can restart the service. It also logs to <code>/var/mobile/relayserver.log</code>.</p>
     </section>
 
     <section>
